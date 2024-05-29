@@ -1,10 +1,9 @@
 from flask import Flask, jsonify, request
-# from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLAlchemy_DATABASE_URl'] = 'sqlite:///reports.db'
-# api = Api(app)
+
 
 db = SQLAlchemy(app)
 
@@ -49,6 +48,25 @@ def viewing_report_fitler_id(id):
             'servis': report.servis,
             'report': report.report
         })
+    else:
+        return {'error': 'There is no such ID in the list of reports'}
+
+
+# Метод для получения отчетов по имени тестера
+@app.route('/viewing_report_fitler_name/<names>')
+def viewing_report_fitler_name(names):
+    reports = Reportings.query.all()
+    response = []
+    for report in reports:
+        if report.name==names:
+            response.append({
+                'id': report.id,
+                'name': report.name,
+                'servis': report.servis,
+                'report': report.report
+            })
+    if response:
+        return jsonify(response)
     else:
         return {'error': 'There is no such ID in the list of reports'}
 
